@@ -1,7 +1,7 @@
 class TodoesController < ApplicationController
 	def index
 		todo = Todo.all
-		render json: todo		
+		render json: todo
 	end
 
 	def show
@@ -11,7 +11,7 @@ class TodoesController < ApplicationController
 
 	def create
 		todo = Todo.new(permit)
-		if user.save
+		if todo.save
 			render json: {message: "Item To Do List Created", id: todo.id}
 		else
 			render json: {message: "Item To Do List Not Created"}
@@ -19,17 +19,17 @@ class TodoesController < ApplicationController
 	end
 
 	def destroy
-		todo = Todo.find (params[:id].to_i)
+		todo = Todo.find (params[:id])
 		if todo.destroy
-			render json: {message: "Item #{text} was destroyed", id: todo.id}
+			render json: {message: "Item #{text} was destroyed"}
 		else
-			render json: {message: "Item #{text} can't destroyed", id: todo.id}
+			render json: {message: "Item #{text} can't destroyed"}
 		end
 	end
 
 	def update
 		todo = Todo.update(params[:id].to_i, permit)
-		render json: user
+		render json: todo
 	end
 
 	private
