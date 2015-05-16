@@ -1,39 +1,51 @@
 class TodoesController < ApplicationController
 	def index
-		todo = Todo.all
-		render json: todo
+		task = Todo.all
+		render json: task
 	end
 
 	def show
-		todo = Todo.find(params[:id].to_i)
-		render json: todo
+		exist = Todo.exists?(params[:id])
+		if exist
+			task = Todo.find(params[:id])
+			render json: task			
+		else
+			render json: {message: "Item wasn't exist"}
+		end
+		
 	end
 
 	def create
-		todo = Todo.new(permit)
-		if todo.save
-			render json: {message: "Item To Do List Created", id: todo.id}
+		task = Todo.new(permit)
+		if task.save
+			render json: {message: "Item To Do List Created", id: task.id}
 		else
-			render json: {message: "Item To Do List Not Created"}
+			render json: {message: "Item wasn't exist"}
 		end
 	end
 
 	def destroy
-		todo = Todo.find (params[:id])
-		if todo.destroy
-			render json: {message: "Item #{text} was destroyed"}
+		exist = Todo.exists?(params[:id])
+		if exist
+			task = Todo.delete(params[:id])
+			render json: {message: "Item was destroyed"}
 		else
-			render json: {message: "Item #{text} can't destroyed"}
+			render json: {message: "Item wasn't exist"}
 		end
 	end
 
 	def update
-		todo = Todo.update(params[:id].to_i, permit)
-		render json: todo
+		exist = Todo.exists?(params[:id])
+		if exist
+			task = Todo.update(params[:id], permit)
+			render json: {message: "Item was updated"}
+		else
+			render json: {message: "Item wasn't exist"}
+		end		
 	end
 
 	private
 	def permit
-		params.require(:todo).permit(:text, :done)
+		params.permit(:text, :done)
 	end
 end
